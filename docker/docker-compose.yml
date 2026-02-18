@@ -1,0 +1,27 @@
+
+services:
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: lootdrop_user
+      POSTGRES_PASSWORD: secretmimick
+      POSTGRES_DB: lootdrop_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: 
+      context: ~/Developer/LootDrop/backend
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://lootdrop_user:secretmimick@db:5432/lootdrop_db
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
